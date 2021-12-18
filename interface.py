@@ -9,12 +9,15 @@ class GUI:
         self.canva = Canvas(self.window, width=width, height=height)
         self.canva.grid(columnspan=3)
         self.createWidgets()
+        self.__bind()
+
+    def __bind(self): 
+        self.window.bind('<Return>', self.send)
 
     def createWidgets(self):
         self.txt_area = Text(self.canva, border=1)
         self.txt_field = Entry(self.canva, width=85, border=1, bg='white')
         self.send_button = Button(self.canva, text='Send', padx=40, command=self.send)
-        
 
         self.txt_area.config(background='#abd3eb')
 
