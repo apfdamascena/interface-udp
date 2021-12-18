@@ -6,7 +6,7 @@ class GUI:
         self.window = Tk()
         self.window.title('4 Atividade')
 
-        self.canva = Canvas(self.window, width, height)
+        self.canva = Canvas(self.window, width=width, height=height)
         self.canva.grid(columnspan=3)
         self.createWidgets()
 
