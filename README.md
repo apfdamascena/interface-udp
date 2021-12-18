@@ -12,3 +12,9 @@ Não devem ser enviadas mensagens vazias nem mensagens em branco;
 - [ ] Deve ser possível o envio de anexo através de um botão, onde será possível escolher um arquivo do computador do usuário e enviá-lo ao destinatário. Esse arquivo poderá ser um vídeo, foto ou música.
 - [ ] Deve haver no chat a visualização do arquivo enviado. Por exemplo: exibir a miniatura da imagem ou a possibilidade de reproduzir o vídeo, ou música escolhida.  
 
+## Connection part
+
+- [ ] Chat será assíncrono, de modo que não haverá necessidade de correspondência entre os usuários
+- [ ] Ambos deverão estar conectados para que não haja perda de pacotes no processo
+- [ ] Todas as mensagens enviadas deverão estar presentes no diretório do destinatário ao final da conversação, incluindo as imagens, vídeos e músicas
+- [ ] Não será obrigatório o uso de um servidor para enviar aos usuários o IP e número de porta, assim, você poderá escolher esses dados conforme sua preferência.
