@@ -1,4 +1,8 @@
 import socket
+from abc import ABC, abstractmethod
+import datetime
+import pickle
+from threading import Thread
 
 class ServerUDP:
 
@@ -12,7 +16,7 @@ class ServerUDP:
 
     def listening(self):
         while True:
-            self.__client_adress = self.__udp_server_socket.recvfrom(ServerUDP.BUFFER_SIZE)
+            self.__message_from_client, self.__client_adress = self.__udp_server_socket.recvfrom(ServerUDP.BUFFER_SIZE)
             self.__connections.append(self.__client_adress)
 
             if len(self.__connections) == 2:
