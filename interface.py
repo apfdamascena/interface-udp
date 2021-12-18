@@ -1,4 +1,5 @@
 from tkinter import *
+from datetime import datetime
 
 
 class GUI:
@@ -24,9 +25,17 @@ class GUI:
         self.clear_button.grid(column=3, row=1)
 
     def send(self, event=None):
-        text = self.txt_field.get() + '\n'
+        text = self.check_valid_input(self.txt_field.get())
         self.txt_area.insert(END, text)
         self.txt_field.delete(0, END)
+
+    def check_valid_input(self, user_input):
+        print(user_input)
+        if user_input.strip() == '':
+            return 'Invalid message! Please, try again \n'
+        else:
+            now = datetime.now()
+            return f'{[now.strftime("%H:%M:%S")]} {self.txt_field.get()}\n'
 
     def clear(self):
         self.txt_area.delete('1.0', END)
