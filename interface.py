@@ -14,6 +14,7 @@ class GUI:
         self.txt_area = Text(self.canva, border=1)
         self.txt_field = Entry(self.canva, width=85, border=1, bg='white')
         self.send_button = Button(self.canva, text='Send', padx=40, command=self.send)
+        
 
         self.txt_area.config(background='#abd3eb')
 
