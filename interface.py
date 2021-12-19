@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import filedialog
+from  PIL import 
 from datetime import datetime
 
 
@@ -32,8 +34,9 @@ class GUI:
 
 
     def open_dialog_with_files(self):
-        print("oi")
-
+        filename = filedialog.askopenfilename()
+        my_image = PhotoImage(file=filename)
+        self.txt_area.image_create(END, image = my_image)
 
     def send(self, event=None):
         text = self.check_valid_input(self.txt_field.get())
