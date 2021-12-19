@@ -16,7 +16,7 @@ class GUI:
         self.createWidgets()
         self.__bind()
 
-        self.client = ClientUDP(28886)
+        self.client = ClientUDP(28886, self)
         self.client.sending_message()
 
     def __bind(self): 
@@ -51,8 +51,8 @@ class GUI:
         self.txt_area.image_create(END, image=my_img)
         self.txt_area.insert(END,f'\n') # serve apenas pra próxima imagem não bugar e aparecer na lateral
     
-    def recive(self):
-        self.txt_area.insert(END, 'text')
+    def recive(self, message):
+        self.txt_area.insert(END, message)
         self.txt_field.delete(0, END)
 
     def send(self, event=None):
