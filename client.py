@@ -11,7 +11,7 @@ class ClientUDP:
         self.__udp_client_socket = socket.socket(family=socket.AF_INET, type= socket.SOCK_DGRAM)
         self.__server_adress_port = ('localhost', port)
         self.__counter = 1
-        self.gui = gui
+        self.__gui = gui
 
     def sending_message(self):
         background_thread_send = Thread(target=self.send_message)
@@ -29,7 +29,7 @@ class ClientUDP:
     def receive_message(self, *test):
         while True:
             self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
-            self.gui.recive(self.__message)
+            self.__gui.receive_and_show_at_screen(self.__message)
             self.make_informations(self.__message)
     
     def make_informations(self, *information):
