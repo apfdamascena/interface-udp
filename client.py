@@ -24,7 +24,7 @@ class ClientUDP:
 
     def send_message(self, *user_message):
         if len(user_message) > 0:
-            self.__udp_client_socket.sendto(bytes(user_message[0],'utf-8'), (self.__informations[0], int(self.__informations[1])))
+            self.__udp_client_socket.sendto(bytes(user_message[0],'utf-8'), self.__informations)
 
     def receive_message(self, *test):
         while True:
