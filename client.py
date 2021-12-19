@@ -12,21 +12,21 @@ class ClientUDP:
         self.__server_adress_port = ('localhost', port)
         self.__counter = 1
 
+        self.user_message = ''
 
     def sending_message(self):
-        background_thread_send = Thread(target= self.__send_message)
+        background_thread_send = Thread(target= self.send_message, args=self.user_message)
         background_thread_receive = Thread(target= self.__receive_message)
 
         self.__udp_client_socket.sendto(bytes("connecting", "utf-8"), self.__server_adress_port)
      
         background_thread_receive.start()
         background_thread_send.start()
-       
 
-    def __send_message(self):
+    def send_message(self, user_message):
+        self.user_message = user_message
         while True:
-            message = input() 
-            self.__udp_client_socket.sendto(bytes(message,'utf-8'), (self.__informations[0], int(self.__informations[1])))
+            self.__udp_client_socket.sendto(bytes(self.user_message,'utf-8'), (self.__informations[0], int(self.__informations[1])))
 
     def __receive_message(self):
         while True:
@@ -53,8 +53,3 @@ class ClientUDP:
         else:
             print(f'Sender: {self.__adress[1]}\nDate: {date.today()}\nNumber Message: {self.__counter}\nMessage: {information}\n')
             self.__counter += 1
-                
-                    
-if __name__ == "__main__":
-    client = ClientUDP(28886)
-    client.sending_message()
