@@ -35,20 +35,9 @@ class ClientUDP:
     def make_informations(self, *information):
         information = information[0].decode('utf-8').strip()
         if information[0] == '(':
-            helper = ""
-            informations = []
-            for letter in information:
-                if letter == " " or letter == '(' or letter == ')' or letter == "'":
-                    continue
-                if letter != ',':
-                    helper += letter
-                else:
-                    informations.append(helper)
-                    helper = ""
-            informations.append(helper)
-            print(information)
-            print()
-            self.__informations = informations
+            information = eval(information)
+            print(f'{information}\n')
+            self.__informations = information
         else:
             print(f'Sender: {self.__adress[1]}\nDate: {date.today()}\nNumber Message: {self.__counter}\nMessage: {information}\n')
             self.__counter += 1
