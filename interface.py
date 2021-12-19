@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
 from datetime import datetime
-from client import ClientUDP
 
 
 class GUI:
@@ -11,11 +10,9 @@ class GUI:
 
         self.canva = Canvas(self.window, width=width, height=height)
         self.canva.grid(columnspan=3)
+        
         self.createWidgets()
         self.__bind()
-
-        self.client = ClientUDP(28886)
-        self.client.sending_message()
 
     def __bind(self): 
         self.window.bind('<Return>', self.send)
@@ -43,11 +40,9 @@ class GUI:
     def send(self, event=None):
         text = self.check_valid_input(self.txt_field.get())
         self.txt_area.insert(END, text)
-        self.client.send_message(text)
         self.txt_field.delete(0, END)
 
     def check_valid_input(self, user_input):
-        print(user_input)
         if user_input.strip() == '':
             return 'Invalid message! Please, try again \n'
         else:
