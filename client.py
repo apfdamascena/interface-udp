@@ -26,7 +26,7 @@ class ClientUDP:
         if len(user_message) > 0:
             self.__udp_client_socket.sendto(bytes(user_message[0],'utf-8'), self.__informations)
 
-    def receive_message(self, *test):
+    def receive_message(self):
         while True:
             self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
             self.__gui.receive_and_show_at_screen(self.__message)

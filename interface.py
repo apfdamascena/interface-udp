@@ -49,13 +49,16 @@ class GUI:
         self.__txt_area.insert(END,f'\n') # serve apenas pra próxima imagem não bugar e aparecer na lateral
     
     def receive_and_show_at_screen(self, message):
-        self.__txt_area.insert(END, message)
-        self.__txt_field.delete(0, END)
+        message = message.decode('utf-8').strip()
+        non_printable = ['Waiting another user', 'Invalid message! Please, try again \n']
+        if not ((message in non_printable) or (message[0] == '(' and message[-1] == ')')):
+            self.__txt_area.insert(END, f'Another User: {message}\n')
+            self.__txt_field.delete(0, END)
 
     def __send(self, event=None):
         text = self.__check_valid_input(self.__txt_field.get())
         self.__client.send_message(text)
-        self.__txt_area.insert(END, text)
+        self.__txt_area.insert(END, f'You: {text}')
         self.__txt_field.delete(0, END)
 
     def __check_valid_input(self, user_input):
