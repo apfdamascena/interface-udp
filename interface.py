@@ -96,9 +96,6 @@ class GUI:
         self.videoplayer.pack()
         self.videoplayer.play()
         
-        
-        
-    
     def __play_audio(self):
         pygame.init()
         pygame.mixer.music.load(self.__last_audio)
