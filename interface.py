@@ -5,6 +5,8 @@ from client import ClientUDP
 from PIL import Image, ImageTk
 import pygame
 from tkvideo import tkvideo
+import os
+import base64
 
 
 class GUI:
@@ -45,13 +47,12 @@ class GUI:
        if filename[-3:] == 'jpg' or filename[-4:] == 'jpeg' or filename[-3:] == 'png': # caso seja uma imagem jpg ou jpeg vai exibir elas
            file_pic = Image.open(filename)
            miniature_pic = file_pic.resize((150, (150 * file_pic.height) // file_pic.width), Image.ANTIALIAS)
-           
            my_img = ImageTk.PhotoImage(miniature_pic)
-           
            my_img.image = my_img #cria uma referência, evita que o coletor de lixo do python dê problema.
            self.__txt_area.image_create(END, image=my_img)
            self.__txt_area.insert(END,f'\n') #serve apenas pra próxima imagem não bugar e aparecer na lateral 
-       
+           self.__send_image(filename)
+
        elif filename[-3:] == "wav" or filename[-3:] == 'mp3': #reproduz música
            
            #exibe o ícone do mp3
@@ -62,8 +63,18 @@ class GUI:
            self.__txt_area.image_create(END, image=my_img)
            self.__txt_area.insert(END,f'\n')
            
-           self.__last_audio = filename 
-    
+           self.__last_audio = filename
+
+    def __send_image(self, filename):
+        bytes_size = os.path.getsize(filename)
+        self.__client.send_message(str(bytes_size))
+        file = open(filename, 'rb')
+        part_file = file.read(1024)
+        while part_file:
+            self.__client.send_message(str(part_file))
+            part_file = file.read(1024)
+        file.close() 
+
     def __play_audio(self):
         pygame.init()
         pygame.mixer.music.load(self.__last_audio)

@@ -23,14 +23,28 @@ class ClientUDP:
         background_thread_send.start()
 
     def send_message(self, *user_message):
-        if len(user_message) > 0:
+        if len(user_message) > 0 :
             self.__udp_client_socket.sendto(bytes(user_message[0],'utf-8'), self.__informations)
 
     def receive_message(self):
         while True:
             self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
-            self.__gui.receive_and_show_at_screen(self.__message)
-            self.make_informations(self.__message)
+
+            try: 
+                bytes1 = int(self.__message)
+                file = open('testando.png', 'wb')
+                self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
+                bytes1 -= 1024
+                while bytes1 > 0:
+                    file.write(self.__message)
+                    self.__message, self.__adress = self.__udp_client_socket.recvfrom(min(ClientUDP.BUFFER_SIZE, bytes1))
+                    bytes1 -= 1024
+                file.write(self.__message)
+                file.close()
+            except:
+                self.__gui.receive_and_show_at_screen(self.__message)    
+                print(self.__message)
+                self.make_informations(self.__message)
     
     def make_informations(self, *information):
         information = information[0].decode('utf-8').strip()
