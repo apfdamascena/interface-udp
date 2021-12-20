@@ -17,7 +17,10 @@ class GUI:
         self.__canva.grid(columnspan=3)
         
         self.__createWidgets()
-
+        
+       
+        self.__contvideo = 0
+        self.__contaudio = 0
         self.__client = ClientUDP(28886, self)
         self.__client.sending_message()
 
@@ -28,9 +31,14 @@ class GUI:
        
         self.__attachment = Button(self.__canva, text='Attachment', command=self.__open_dialog_with_files)
         self.__send_button = Button(self.__canva, text='Send', padx=40, command=self.__send)
-        self.__audio_button = Button(self.__canva, text='Play Last Audio', padx=40, command=self.__play_audio)
-        self.__video_button = Button(self.__canva, text='Play Last Video', padx=40, command=self.__play_video)
+        self.__audio_button = Button(self.__canva, text='Play Audio', padx=40, command=self.__play_audio)
+        self.__video_button = Button(self.__canva, text='Play Video', padx=40, command=self.__play_video)
         self.__clear_button = Button(self.__canva, text='Clear', padx=40, command=self.__clear)
+
+        self.__listaudio = Listbox(selectmode = SINGLE, width = 30)
+        self.__listvideo = Listbox(selectmode = SINGLE, width = 30)
+        self.__listvideo.grid(column=1, row=0, columnspan=3)
+        self.__listaudio.grid(column=2, row=0, columnspan=2)
         
         self.__send_button.grid(column=2, row=1)
         self.__clear_button.grid(column=3, row=1)
@@ -65,10 +73,11 @@ class GUI:
             self.__txt_area.image_create(END, image=self.my_img)
             self.__txt_area.insert(END,f'\n')
 
-            self.__last_audio = filename 
+            self.__listaudio.insert(self.__contaudio,filename)
+            self.__contaudio +=1
         
         elif filename[-3:] == 'mp4': #caso seja um video
-            #exibe o símbolo para simbolizar um vídeo
+            #exibe o símbolo para representar um vídeo
             self.file_pic = Image.open('midia_teste/icone_video.png')
             self.miniature_pic = self.file_pic.resize((120, (120 * self.file_pic.height) // self.file_pic.width), Image.ANTIALIAS)
             self.my_img = ImageTk.PhotoImage(self.miniature_pic)
@@ -77,12 +86,14 @@ class GUI:
             self.__txt_area.image_create(END, image=self.my_img)
             self.__txt_area.insert(END,f'\n')
             
-            self.__last_video = filename
+            self.__listvideo.insert(self.__contvideo,filename)
+            self.__contvideo +=1
             
 
     
     def __play_video(self):
         temp = self.__txt_area
+        video_escolhido = self.__listvideo.get(self.__listvideo.curselection())
         
         newwindow = Toplevel(self.__window)
         newwindow.title("Videoplayer")
@@ -92,16 +103,16 @@ class GUI:
         
         self.videoplayer = TkinterVideo(master=newwindow, scaled = True, pre_load=True)
         self.videoplayer.set_size((400,250))
-        self.videoplayer.load(self.__last_video)
+        self.videoplayer.load(video_escolhido)
         self.videoplayer.pack()
         self.videoplayer.play()
         
         
-        
     
     def __play_audio(self):
+        musica_escolhida = self.__listaudio.get(self.__listaudio.curselection())
         pygame.init()
-        pygame.mixer.music.load(self.__last_audio)
+        pygame.mixer.music.load(musica_escolhida)
         pygame.mixer.music.play(loops=0)
     
     def receive_and_show_at_screen(self, message):
