@@ -66,16 +66,14 @@ class GUI:
            self.__last_audio = filename 
 
     def __send_image(self, filename):
-        size_bytes = os.path.getsize(filename)
-        header = f'{filename}:{size_bytes}'
-        self.__client.send_message(header)
+        self.__client.send_message("enviando")
 
         file = open(filename, 'rb')
-        parts_bytes_file = file.read(ClientUDP.BUFFER_SIZE)
-        while parts_bytes_file: 
-            parts_bytes_file = parts_bytes_file.decode('utf-8')
-            self.__client.send_message(str(parts_bytes_file))
-            parts_bytes_file = file.read(ClientUDP.BUFFER_SIZE)
+        parts_bytes_file = True
+        while parts_bytes_file:
+            parts_bytes_file = file.read(ClientUDP.BUFFER_SIZE) 
+            self.__client.send_message(parts_bytes_file)
+            
         file.close()
 
 
@@ -86,7 +84,6 @@ class GUI:
         pygame.mixer.music.play(loops=0)
     
     def receive_and_show_at_screen(self, message):
-        message = message.decode('utf-8').strip()
         non_printable = ['Waiting another user', 'Invalid message! Please, try again']
         if not ((message in non_printable) or (message[0] == '(' and message[-1] == ')')):
             self.__txt_area.insert(END, f'Another User: {message}\n')

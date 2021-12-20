@@ -1,6 +1,9 @@
 import socket
 from threading import Thread
 from datetime import date
+from PIL import Image
+import io
+import base64
 
 
 class ClientUDP:
@@ -24,35 +27,32 @@ class ClientUDP:
 
     def send_message(self, *user_message):
         if len(user_message) > 0:
-            self.__udp_client_socket.sendto(bytes(user_message[0],'utf-8'), self.__informations)
+            if isinstance(user_message[0], str):
+                self.__udp_client_socket.sendto(bytes(user_message[0],'utf-8'), self.__informations)
+            else:
+                self.__udp_client_socket.sendto(user_message[0], self.__informations)
+
 
     def receive_message(self):
         while True:
             self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
             self.__message = self.__message.decode('utf-8')
-            print(self.__message)
 
-            try:
-                message = self.__message.split(':')
-                bytes_size = int(message[1])
-                name = message[0]
-                file = open(name, 'wb')
+            if self.__message == "enviando":
+                file = open("testando.png", 'wb')
 
-                self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
-                bytes_size -= ClientUDP.BUFFER_SIZE
-                while bytes_size > 0: 
+                while self.__message:
+                    self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
                     file.write(self.__message)
-                    self.__message, self.__adress = self.__udp_client_socket.recvfrom(min(ClientUDP.BUFFER_SIZE, bytes_size))
-                    bytes_size -= ClientUDP.BUFFER_SIZE
-                
-                print("downloaded")
-            except:
 
+                file.close()
+
+            else:
                 self.__gui.receive_and_show_at_screen(self.__message)
                 self.make_informations(self.__message)
     
     def make_informations(self, *information):
-        information = information[0].decode('utf-8').strip()
+        information = information[0].strip()
         if information[0] == '(':
             information = eval(information)
             print(f'{information}\n')
