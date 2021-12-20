@@ -29,8 +29,27 @@ class ClientUDP:
     def receive_message(self):
         while True:
             self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
-            self.__gui.receive_and_show_at_screen(self.__message)
-            self.make_informations(self.__message)
+            self.__message = self.__message.decode('utf-8')
+            print(self.__message)
+
+            try:
+                message = self.__message.split(':')
+                bytes_size = int(message[1])
+                name = message[0]
+                file = open(name, 'wb')
+
+                self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
+                bytes_size -= ClientUDP.BUFFER_SIZE
+                while bytes_size > 0: 
+                    file.write(self.__message)
+                    self.__message, self.__adress = self.__udp_client_socket.recvfrom(min(ClientUDP.BUFFER_SIZE, bytes_size))
+                    bytes_size -= ClientUDP.BUFFER_SIZE
+                
+                print("downloaded")
+            except:
+
+                self.__gui.receive_and_show_at_screen(self.__message)
+                self.make_informations(self.__message)
     
     def make_informations(self, *information):
         information = information[0].decode('utf-8').strip()
