@@ -107,7 +107,6 @@ class GUI:
         self.videoplayer.pack()
         self.videoplayer.play()
         
-        
     
     def __play_audio(self):
         musica_escolhida = self.__listaudio.get(self.__listaudio.curselection())
