@@ -24,6 +24,7 @@ class GUI:
 
     def __createWidgets(self):
         self.__txt_area = Text(self.__canva, border=1)
+        self.__image_on_screen = ImageScreen(self.__txt_area)
 
         self.__txt_field = Entry(self.__canva, width=85, border=1, bg='white')
        
@@ -42,14 +43,13 @@ class GUI:
         self.__txt_area.config(background='#abd3eb')
 
     def __open_dialog_with_files(self):
-        image_on_screen = ImageScreen(self.__txt_area)
         filename = filedialog.askopenfilename()
         extension_type = ExtensionType()
 
         if extension_type.check_photo_extension(filename):
-           image_on_screen.add(150, filename)           
+           self.__image_on_screen.add(150, filename)           
         elif extension_type.check_video_extension(filename):
-           image_on_screen.add(120) 
+           self.__image_on_screen.add(120) 
            self.__last_audio = filename
         self.__send_file(filename)
          
@@ -72,8 +72,11 @@ class GUI:
     
     def receive_and_show_at_screen(self, message):
         if self.__message_checker.is_printable(message): 
-            self.__txt_area.insert(END, f'Another User: {message}\n')
+            self.__txt_area.insert(END, f'Another User: {message}')
             self.__txt_field.delete(0, END)
+
+    def receive_and_show_image(self, filename):
+        self.__image_on_screen.add(150, filename) 
 
     def __send(self, event=None):
         text = self.__message_checker.is_valid_input(self.__txt_field.get())
