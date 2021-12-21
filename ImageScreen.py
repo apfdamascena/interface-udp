@@ -6,7 +6,7 @@ class ImageScreen:
     def __init__(self, text_area):
         self.__txt_area = text_area
 
-    def add(self, type_file, filename=''):
+    def add(self, type_file, filename):
         possibles = [filename, 'midia_teste/mp4.png', 'midia_teste/mp3.png']
         file = possibles[type_file]
         file_pic = Image.open(file)

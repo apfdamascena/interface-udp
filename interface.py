@@ -23,8 +23,8 @@ class GUI:
         self.__client = ClientUDP(28886, self)
         self.__client.listenning()
 
-        self.__contvideo = 0
-        self.__contaudio = 0
+        self.__video_counter = 0
+        self.__audio_conter  = 0
 
     def __createWidgets(self):
         self.__txt_area = Text(self.__canva, border=1)
@@ -47,6 +47,7 @@ class GUI:
         self.__clear_button.grid(column=3, row=1)
         self.__attachment.grid(column=4, row=1)
         self.__audio_button.grid(column=5,row=1)
+        self.__video_button.grid(column=6, row=1)
         self.__txt_area.grid(column=0, row=0, columnspan=3)
         self.__txt_field.grid(column=0, row=1, columnspan=2)
         
@@ -54,19 +55,16 @@ class GUI:
 
     def __open_dialog_with_files(self):
         filename = filedialog.askopenfilename()
-        extension_type = ExtensionType()
+        extension_type = ExtensionType().check_extension(filename)
 
-        if extension_type.check_photo_extension(filename):
-           self.__image_on_screen.add(TypeFile.IMAGE,filename)         
-        elif extension_type.check_video_extension(filename):
-           self.__image_on_screen.add(TypeFile.VIDEO) 
+        self.__image_on_screen.add(extension_type, filename)
+
+        if extension_type == TypeFile.AUDIO:
            self.__last_audio = filename
-           self.__listvideo.insert(self.__contvideo,filename)
-           self.__contvideo +=1
-        elif extension_type.check_audio_extension(filename):
-           self.__image_on_screen.add(TypeFile.AUDIO) 
-           self.__listaudio.insert(self.__contaudio,filename)
-           self.__contaudio +=1  
+           self.__add_list_audio()
+
+        if extension_type == TypeFile.VIDEO:
+           self.__add_list_video()
 
         self.__send_file(filename)
          
@@ -96,8 +94,14 @@ class GUI:
             self.__txt_field.delete(0, END)
 
     def receive_and_show_image(self, filename):
-        self.__image_on_screen.add(2)
-        self.__listaudio.insert(0,filename) 
+        extension_type = ExtensionType().check_extension(filename)
+        self.__image_on_screen.add(extension_type, filename)
+
+        if extension_type == TypeFile.AUDIO:
+            self.__add_list_audio()
+
+        if extension_type == TypeFile.VIDEO:
+            self.__add_list_video()
 
     def __send(self, event=None):
         text = self.__message_checker.is_valid_input(self.__txt_field.get())
@@ -110,6 +114,16 @@ class GUI:
 
     def start(self):
         self.__window.mainloop()
+
+    def __add_list_audio(self):
+        self.__listaudio.insert(self.__audio_conter ,filename)
+        self.__audio_conter += 1
+
+    def __add_list_video(self):
+        self.__listvideo.insert(self.__video_counter,filename)
+        self.__video_counter += 1
+
+
         
 
 if __name__ == '__main__':
