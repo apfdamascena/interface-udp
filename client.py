@@ -16,7 +16,7 @@ class ClientUDP:
         self.__counter = 1
         self.__gui = gui
 
-    def sending_message(self):
+    def listenning(self):
         background_thread_send = Thread(target=self.send_message)
         background_thread_receive = Thread(target=self.receive_message)
 
@@ -37,25 +37,24 @@ class ClientUDP:
         while True:
             self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
             self.__message = self.__message.decode('utf-8')
-
-            if self.__message == "enviando":
-                file = open("testando.png", 'wb')
-
-                while self.__message:
-                    self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
-                    file.write(self.__message)
-
-                file.close()
-
-            else:
+            try:
+                self.__receive_all_file(self.__message)
+            except:
                 self.__gui.receive_and_show_at_screen(self.__message)
                 self.make_informations(self.__message)
+
+    def __receive_all_file(self, header):
+        self.__filename, _ = header.split(':')
+        file = open(self.__filename, 'wb')
+        while self.__message:
+            self.__message, self.__adress = self.__udp_client_socket.recvfrom(ClientUDP.BUFFER_SIZE)
+            file.write(self.__message)
+        file.close()
     
     def make_informations(self, *information):
         information = information[0].strip()
         if information[0] == '(':
             information = eval(information)
-            print(f'{information}\n')
             self.__informations = information
         else:
             print(f'Sender: {self.__adress[1]}\nDate: {date.today()}\nNumber Message: {self.__counter}\nMessage: {information}\n')

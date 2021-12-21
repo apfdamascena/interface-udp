@@ -1,11 +1,10 @@
 from tkinter import *
 from tkinter import filedialog
-from datetime import datetime
 from client import ClientUDP
-from PIL import Image, ImageTk
 import pygame
-from tkvideo import tkvideo
-import os
+from ImageScreen import ImageScreen
+from ExtensionType import ExtensionType
+from MessageCheck import MessageCheck
 
 class GUI:
     def __init__(self, width, height):
@@ -15,11 +14,13 @@ class GUI:
 
         self.__canva = Canvas(self.__window, width=width, height=height)
         self.__canva.grid(columnspan=3)
-        
+
+        self.__message_checker = MessageCheck()
+
         self.__createWidgets()
 
         self.__client = ClientUDP(28886, self)
-        self.__client.sending_message()
+        self.__client.listenning()
 
     def __createWidgets(self):
         self.__txt_area = Text(self.__canva, border=1)
@@ -41,66 +42,44 @@ class GUI:
         self.__txt_area.config(background='#abd3eb')
 
     def __open_dialog_with_files(self):
-       filename = filedialog.askopenfilename()
-       if filename[-3:] == 'jpg' or filename[-4:] == 'jpeg' or filename[-3:] == 'png': # caso seja uma imagem jpg ou jpeg vai exibir elas
-           file_pic = Image.open(filename)
-           miniature_pic = file_pic.resize((150, (150 * file_pic.height) // file_pic.width), Image.ANTIALIAS)
-           
-           my_img = ImageTk.PhotoImage(miniature_pic)
-           
-           my_img.image = my_img #cria uma referência, evita que o coletor de lixo do python dê problema.
-           self.__txt_area.image_create(END, image=my_img)
-           self.__txt_area.insert(END,f'\n') #serve apenas pra próxima imagem não bugar e aparecer na lateral 
-           self.__send_image(filename)
-       
-       elif filename[-3:] == "wav" or filename[-3:] == 'mp3': #reproduz música
-           
-           #exibe o ícone do mp3
-           file_pic = Image.open('midia_teste/mp3.png')
-           miniature_pic = file_pic.resize((120, (120 * file_pic.height) // file_pic.width), Image.ANTIALIAS)
-           my_img = ImageTk.PhotoImage(miniature_pic)
-           my_img.image = my_img 
-           self.__txt_area.image_create(END, image=my_img)
-           self.__txt_area.insert(END,f'\n')
-           
-           self.__last_audio = filename 
+        image_on_screen = ImageScreen(self.__txt_area)
+        filename = filedialog.askopenfilename()
+        extension_type = ExtensionType()
 
-    def __send_image(self, filename):
-        self.__client.send_message("enviando")
+        if extension_type.check_photo_extension(filename):
+           image_on_screen.add(150, filename)           
+        elif extension_type.check_video_extension(filename):
+           image_on_screen.add(120) 
+           self.__last_audio = filename
+        self.__send_file(filename)
+         
+    def __send_file(self, filename):
+        name = filename.split('/')[-1]
+        header = f'{name}:file'
+        self.__client.send_message(header)
 
         file = open(filename, 'rb')
         parts_bytes_file = True
         while parts_bytes_file:
             parts_bytes_file = file.read(ClientUDP.BUFFER_SIZE) 
             self.__client.send_message(parts_bytes_file)
-            
         file.close()
 
-
-    
     def __play_audio(self):
         pygame.init()
         pygame.mixer.music.load(self.__last_audio)
         pygame.mixer.music.play(loops=0)
     
     def receive_and_show_at_screen(self, message):
-        non_printable = ['Waiting another user', 'Invalid message! Please, try again']
-        if not ((message in non_printable) or (message[0] == '(' and message[-1] == ')')):
+        if self.__message_checker.is_printable(message): 
             self.__txt_area.insert(END, f'Another User: {message}\n')
             self.__txt_field.delete(0, END)
 
     def __send(self, event=None):
-        text = self.__check_valid_input(self.__txt_field.get())
+        text = self.__message_checker.is_valid_input(self.__txt_field.get())
         self.__client.send_message(text)
         self.__txt_area.insert(END, f'You: {text}')
         self.__txt_field.delete(0, END)
-
-    def __check_valid_input(self, user_input):
-        if not user_input.strip():
-            return 'Invalid message! Please, try again \n'
-        else:
-            now = datetime.now()
-            return f'{[now.strftime("%H:%M:%S")]} {self.__txt_field.get()}\n'
 
     def __clear(self):
         self.__txt_area.delete('1.0', END)
