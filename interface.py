@@ -31,26 +31,26 @@ class GUI:
         self.__txt_area = Text(self.__canva, border=1)
         self.__image_on_screen = ImageScreen(self.__txt_area)
 
-        self.__txt_field = Entry(self.__canva, width=85, border=1, bg='white')
+        self.__txt_field = Entry(self.__canva, width=80, border=1, bg='white')
        
         self.__attachment = Button(self.__canva, text='Attachment', command=self.__open_dialog_with_files)
-        self.__send_button = Button(self.__canva, text='Send', padx=40, command=self.__send)
-        self.__video_button = Button(self.__canva, text='Play Video', padx=40, command=self.__play_video)
-        self.__audio_button = Button(self.__canva, text='Play Audio', padx=40, command=self.__play_audio)
-        self.__clear_button = Button(self.__canva, text='Clear', padx=40, command=self.__clear)
+        self.__send_button = Button(self.__canva, text='Send', padx=30, command=self.__send)
+        self.__video_button = Button(self.__canva, text='Play Video', padx=30, command=self.__play_video)
+        self.__audio_button = Button(self.__canva, text='Play Audio', padx=30, command=self.__play_audio)
+        self.__clear_button = Button(self.__canva, text='Clear', padx=30, command=self.__clear)
 
         self.__listaudio = Listbox(selectmode = SINGLE, width = 20)
         self.__listvideo = Listbox(selectmode = SINGLE, width = 20)
+
         self.__listvideo.grid(column=2, row=0, columnspan=2)
         self.__listaudio.grid(column=3, row=0, columnspan=2)
-
         self.__send_button.grid(column=2, row=2)
         self.__clear_button.grid(column=3, row=2)
         self.__attachment.grid(column=4, row=2)
-        self.__video_button.grid(column=2, row=1, columnspan=1)
-        self.__audio_button.grid(column=3,row=1, columnspan=1)
-        self.__txt_area.grid(column=0, row=0, columnspan=3)
-        self.__txt_field.grid(column=0, row=2, columnspan=2)
+        self.__video_button.grid(column=5, row=2)
+        self.__audio_button.grid(column=6,row=2)
+        self.__txt_area.grid(column=0, row=0)
+        self.__txt_field.grid(column=0, row=2)
         
         self.__txt_area.config(background='#abd3eb')
 

@@ -1,0 +1,5 @@
+1. É necessária a instalação da biblioteca Pillow, para isso basta digitar "pip install Pillow" ou "pip3 install -r requirements.txt"
+
+2. Primeiro rode o server.py depois o arquivo interface.py 2 vezes
+
+3. Para selecionar o vídeo/audio para dar play é só clicar no path que aparece quando alguma mídia é adicionada e clicar no botão play audio ou play video
